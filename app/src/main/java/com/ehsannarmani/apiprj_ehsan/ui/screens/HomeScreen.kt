@@ -100,7 +100,9 @@ fun HomeScreen(navController: NavHostController, isOnline: Boolean) {
 
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
-    val viewModel: SocketViewModel = viewModel(factory = ViewModelProvider())
+    val viewModel: SocketViewModel = remember {
+        SocketViewModel.getViewModel()
+    }
 
     val connectedToSocket = viewModel.connectedToSocket
 
@@ -166,6 +168,9 @@ fun HomeScreen(navController: NavHostController, isOnline: Boolean) {
 //        }
 //    }
     LaunchedEffect(key1 = isOnline) {
+        if (connectedToSocket){
+            viewModel.reconnect(context)
+        }
         viewModel.setStatus(
             if (isOnline) "1" else "0"
         )
